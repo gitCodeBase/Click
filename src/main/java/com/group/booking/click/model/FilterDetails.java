@@ -4,39 +4,32 @@ import java.io.Serializable;
 
 public class FilterDetails implements Serializable {
 
-	private String place;
-	private String state;
-	private String city;
-	private int zip;
-	private String[] contactNumber; //Can have multiple numbers to contact
-	private String[] mailId; 
-	private String webAddress;
-	private String status;		//current status - whether active or deactive. An item can be made deactive for a certain period.
+	private String seatingCapcity;
+	private String tempControl;
+	private double amount;
 
-	public String getPlace() {
-		return place;
+	public String getSeatingCapcity() {
+		return seatingCapcity;
 	}
-	public void setPlace(String place) {
-		this.place = place;
+	public void setSeatingCapcity(String seatingCapcity) {
+		this.seatingCapcity = seatingCapcity;
 	}
-	public String getState() {
-		return state;
+	public String getTempControl() {
+		return tempControl;
 	}
-	public void setState(String state) {
-		this.state = state;
+	public void setTempControl(String tempControl) {
+		this.tempControl = tempControl;
 	}
-	public String getCity() {
-		return city;
+	public double getAmount() {
+		return amount;
 	}
-	public void setCity(String city) {
-		this.city = city;
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
-	public int getZip() {
-		return zip;
-	}
-	public void setZip(int zip) {
-		this.zip = zip;
-	}
+	
+	
+	
+	
 	
 	
 }

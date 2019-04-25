@@ -1,177 +1,121 @@
 package com.group.booking.click.dao.impl;
 
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.group.booking.click.dao.AvailDao;
-import com.group.booking.click.dao.BookingDao;
 import com.group.booking.click.dao.ItemDao;
-import com.group.booking.click.model.AvailabilityDetails;
-import com.group.booking.click.model.BookingDetails;
-import com.group.booking.click.model.ItemDetails;
-import com.group.booking.click.utility.Helper;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import com.group.booking.click.model.Item;
+import com.group.booking.click.model.ItemSearchCriteria;
+import com.group.booking.click.utility.DBConstants;
+import com.mongodb.gridfs.GridFSDBFile;
 
 @Component
-public class ClickRepositoryImpl implements AvailDao, ItemDao, BookingDao {
+public class ClickRepositoryImpl implements ItemDao {
 
+	@Autowired
+	MongoTemplate mongoTemplate;
 
-	 @Autowired
-	 MongoTemplate mongoTemplate;
+	@Autowired
+	GridFsTemplate gridFsTemplate;
 
-	 @Override
-	 public List<AvailabilityDetails> fetchAvailability(AvailabilityDetails availabilityDetails){
-		 ConnectionImpl clickDao = ConnectionImpl.getInstance();
-		 DB db = clickDao.getDb();
-		 DBCollection collection = db.getCollection("AvailDetails");
-		
-		 DBObject condition = new BasicDBObject();
-		 BasicDBList values = new BasicDBList();
-	
-		 if(availabilityDetails.getItemId() != null){
-			 values.add(new BasicDBObject("itemId", availabilityDetails.getItemId()));
-		 }
-		 if(availabilityDetails.getFromDate() != null && availabilityDetails.getToDate() != null) {
-			 String[] splittedFromDates = Helper.splitDate(availabilityDetails.getFromDate());
-			 String[] splittedToDates = Helper.splitDate(availabilityDetails.getToDate());
-			 if(availabilityDetails.getItemId() != null) {
-				 condition.put("$and", values);
-			 }
-			 values.add(new BasicDBObject("availDates.year", new BasicDBObject("$eq", Integer.valueOf(splittedFromDates[2]))
-			 	.append("$lte", Integer.valueOf(splittedToDates[2]))));
-				condition.put("$and", values);
-				values.add(new BasicDBObject("availDates.monthDays.month", new BasicDBObject("$gte", Integer.valueOf(splittedFromDates[0]))
-					.append("$lte", Integer.valueOf(splittedToDates[0]))));
-				condition.put("$and", values);
-				values.add(new BasicDBObject("availDates.monthDays.days", new BasicDBObject("$gte", Integer.valueOf(splittedFromDates[1]))
-					.append("$lte", Integer.valueOf(splittedToDates[1]))));
-				condition.put("$and", values);
-		 }
-		// /result stored in cursor using find() method
-		DBCursor cursor2 = collection.find(condition);
-		
-		List<AvailabilityDetails> returnList = new ArrayList<AvailabilityDetails>();
-		while (cursor2.hasNext()) {
-		    BasicDBObject obj2 = (BasicDBObject) cursor2.next();
-		    AvailabilityDetails fetchedDetails = mongoTemplate.getConverter().read(AvailabilityDetails.class, obj2);  
-		    returnList.add(fetchedDetails); 
-		    System.out.println(obj2.toJson().toString());
-		}
-		
-		/*BasicDBObject query = new BasicDBObject();
-		BasicDBObject field = new BasicDBObject();*/
-		
-		/*field.put("availableDates", 1);
-		DBCursor cursor1 = collection.find(query,field);
-		*/
-		return returnList;
-	 }
-	 /**
-	 * Method to insert a new item availability details and to add new availability details
-	 * For eg. For a month.
-	 */
-	public void saveOrUpdateAvailability(AvailabilityDetails availabilityDetails) throws JsonProcessingException{
-		ConnectionImpl clickDao = ConnectionImpl.getInstance();
-		DB db = clickDao.getDb();
-		DBCollection collection = db.getCollection("AvailDetails");
-		ObjectMapper kk = new ObjectMapper();
-		String hh = kk.writeValueAsString(availabilityDetails);
-		
-		DBObject bson = ( DBObject ) JSON.parse( hh );
-		//will do both save or update. collection.insert -> only for saving....		
-		collection.save(bson);
-		
-		System.out.println("Inserted.....");
-	}
-	
-	//--------------------------------------------------------------------------------------------------------------------//
-	
+	// --------------------------------------------------------------------------------------------------------------------//
+
 	@Override
-	public List<ItemDetails> fetchItems(String type) {
-		ConnectionImpl clickDao = ConnectionImpl.getInstance();
-		DB db = clickDao.getDb();
-		DBCollection collection = db.getCollection("ItemDetails");
-		
-		DBObject query = new BasicDBObject("type", new BasicDBObject("$eq", type));
-		//result stored in cursor using find() method
-		DBCursor cursor2 = collection.find(query);
+	public List<Item> fetchItems(Item item) {
 
-		List<ItemDetails> returnList = new ArrayList<ItemDetails>();
-		while (cursor2.hasNext()) {
-		    BasicDBObject obj2 = (BasicDBObject) cursor2.next();
-		    ItemDetails fetchedDetails = mongoTemplate.getConverter().read(ItemDetails.class, obj2);  
-		    returnList.add(fetchedDetails); 
-		    System.out.println(obj2.toJson().toString());
-		}
-		System.out.println("found.  1....");
-		
-		return returnList;
+		List<Item> itemList = mongoTemplate.find(Query.query(Criteria.where(DBConstants.ITEM_TYPE).in(item.getType())
+				.and(DBConstants.ITEM_PLACE_ID).is(item.getPlaceId())), Item.class);
+
+		return itemList;
 	}
-	
+
 	/**
 	 * Method to insert a new item details
 	 * 
 	 */
-	public void insertItemDetails(ItemDetails itemDetails) throws JsonProcessingException{
-		ConnectionImpl clickDao = ConnectionImpl.getInstance();
-		DB db = clickDao.getDb();
-		DBCollection collection = db.getCollection("ItemDetails");
-		ObjectMapper kk = new ObjectMapper();
-		String hh = kk.writeValueAsString(itemDetails);
-		
-		DBObject bson = ( DBObject ) JSON.parse( hh );
-		//will do both save or update. collection.insert -> only for saving....		
-		collection.save(bson);
-		
-		System.out.println("Inserted.....");
+	public void insertItemDetails(Item itemDetails) throws JsonProcessingException {
+
+		mongoTemplate.save(itemDetails);
 	}
-	
-	
+
+	/**
+	 * Method to update item details
+	 * 
+	 */
+	public void updateItemDetails(Item itemDetails) throws JsonProcessingException {
+
+		Query updateQuery = new Query();
+		updateQuery.addCriteria(Criteria.where(DBConstants.ITEM_ID).is(new ObjectId(itemDetails.get_id())));
+
+		Update update = new Update();
+
+		update.set(DBConstants.ITEM_TYPE, itemDetails.getType());
+		update.set(DBConstants.ITEM_DETAILS, itemDetails.getDetails());
+		update.set(DBConstants.ITEM_PRICE, itemDetails.getPrice());
+		update.set(DBConstants.ITEM_FILTER, itemDetails.getFilter());
+		update.set(DBConstants.ITEM_REVIEWS, itemDetails.getReviews());
+		update.set(DBConstants.ITEM_LASTUPDATEDBY, itemDetails.getLastUpdatedBy());
+		update.set(DBConstants.ITEM_LASTUPDATEDON, itemDetails.getLastUpdatedOn());
+
+		mongoTemplate.updateFirst(updateQuery, update, Item.class);
+	}
+
 	@Override
-	public List<ItemDetails> filteredItems(String type, String place,
-			String zip, String fromDate, String toDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Item> filteredItems(ItemSearchCriteria itemSearchCriteria) {
+
+		Query filterQuery = new Query();
+		filterQuery
+				.addCriteria(Criteria.where(DBConstants.ITEM_TYPE).in(itemSearchCriteria.getType())
+						.and(DBConstants.ITEM_PLACE_ID).is(itemSearchCriteria.getPlaceId())
+						.and(DBConstants.ITEM_FILTER_SEATING_CAPCITY).gte(itemSearchCriteria.getSeatingCapacity())
+						.and(DBConstants.ITEM_FILTER_TEMP_CONTROL).is(itemSearchCriteria.getTempControl()))
+				.with(new Sort(Sort.Direction.ASC, DBConstants.ITEM_DETAILS_AMOUNT));
+
+		List<Item> filteredList = mongoTemplate.find(filterQuery, Item.class);
+		return filteredList;
 	}
+
 	@Override
-	public ItemDetails fetchItemDetails(String itemId) {
-		
-		ConnectionImpl connection = ConnectionImpl.getInstance();
-		DB db = connection.getDb();
-		DBCollection collection = db.getCollection("ItemDetails");
-		
-		DBObject query = new BasicDBObject("_id", new BasicDBObject("$eq", itemId));
-		DBCursor cursor = collection.find(query);
-		
-		ItemDetails fetchedDetails = null;
-		while (cursor.hasNext()) {
-		    BasicDBObject obj2 = (BasicDBObject) cursor.next();
-		    fetchedDetails = mongoTemplate.getConverter().read(ItemDetails.class, obj2);  
-		    System.out.println(obj2.toJson().toString());
-		}
-		System.out.println("found.  1....");
-		
-		return fetchedDetails;
+	public Item fetchItemDetails(String itemId) {
+
+		Query filterQuery = new Query();
+		filterQuery.addCriteria(Criteria.where(DBConstants.ITEM_ID).is(itemId));
+
+		Item itemDetails = mongoTemplate.findById(itemId, Item.class);//(filterQuery, Item.class);
+		return itemDetails;
 	}
 	
-	//------------------------------------- Booking Details -----------------------------------//
-	
-	@Override
-	public void updateBookingDetails(BookingDetails bookingDetails) {
-		
+	public List<Item> getItemsBasedOnVendorId(String vendorId) {
+		Query filterQuery = new Query();
+		filterQuery.addCriteria(Criteria.where(DBConstants.ITEM_VENDOR_ID).is(vendorId));
+
+		List<Item> itemDetails = mongoTemplate.find(filterQuery, Item.class);
+		return itemDetails;
+	}
+
+	public GridFSDBFile retrieveImage() {
+	//	GridFSFile gridFsFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is("1234.png")));
+		GridFSDBFile imageFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is("1234.jpg")));
+		return imageFile;
 	}
 	
+	public void saveImage(InputStream targetStream, String fileName) throws FileNotFoundException {
+		//  InputStream targetStream = new FileInputStream(convFile);
+		gridFsTemplate.store(targetStream, fileName);
+
+	}
+
 
 }

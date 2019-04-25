@@ -1,16 +1,14 @@
 package com.group.booking.click.dao.impl;
 
-import java.net.UnknownHostException;
-
 import org.springframework.stereotype.Component;
 
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 @Component
 public class ConnectionImpl {
 
-	private static DB db = null;
+	private static MongoDatabase db = null;
 	private static ConnectionImpl instance;
 	
 	protected ConnectionImpl(){
@@ -26,12 +24,12 @@ public class ConnectionImpl {
 
 			/**** Get database ****/
 			// if database doesn't exists, MongoDB will create it for you
-			db = mongo.getDB("test");
+			db = mongo.getDatabase("catalog");
 		}
 		return instance;
 	}
 
-	public DB getDb() {
+	public MongoDatabase getDb() {
 		return db;
 	}
 	

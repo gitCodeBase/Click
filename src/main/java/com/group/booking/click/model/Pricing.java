@@ -1,89 +1,44 @@
 package com.group.booking.click.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Pricing implements Serializable{
 
-	private String id;
-	private String itemId;
-	private double rate;
+	private double baseRate;
 	private double tax;
-	private double discountPercentage;
-	private int minimumAmountForDiscount;
-	private double serviceFee;
-	private double festivalOffer;
-	private Date dateFrom;
-	private String lastUpdatedUserId;
-	private Date lastUpdatedDate;
+	private double discount;
+	private double subTotal;
+	private double otherDiscount;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getItemId() {
-		return itemId;
-	}
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
-	}
-	public double getRate() {
-		return rate;
-	}
-	public void setRate(double rate) {
-		this.rate = rate;
-	}
 	public double getTax() {
 		return tax;
 	}
 	public void setTax(double tax) {
 		this.tax = tax;
 	}
-	public double getDiscountPercentage() {
-		return discountPercentage;
+	public double getBaseRate() {
+		return baseRate;
 	}
-	public void setDiscountPercentage(double discountPercentage) {
-		this.discountPercentage = discountPercentage;
+	public void setBaseRate(double baseRate) {
+		this.baseRate = baseRate;
 	}
-	public int getMinimumAmountForDiscount() {
-		return minimumAmountForDiscount;
+	public double getDiscount() {
+		return discount;
 	}
-	public void setMinimumAmountForDiscount(int minimumAmountForDiscount) {
-		this.minimumAmountForDiscount = minimumAmountForDiscount;
+	public void setDiscount(double discount) {
+		this.discount = discount;
 	}
-	public double getServiceFee() {
-		return serviceFee;
+	public double getSubTotal() {
+		return subTotal;
 	}
-	public void setServiceFee(double serviceFee) {
-		this.serviceFee = serviceFee;
+	public void setSubTotal(double subTotal) {
+		this.subTotal = subTotal;
 	}
-	public double getFestivalOffer() {
-		return festivalOffer;
+	public double getOtherDiscount() {
+		return otherDiscount;
 	}
-	public void setFestivalOffer(double festivalOffer) {
-		this.festivalOffer = festivalOffer;
+	public void setOtherDiscount(double otherDiscount) {
+		this.otherDiscount = otherDiscount;
 	}
-	public Date getDateFrom() {
-		return dateFrom;
-	}
-	public void setDateFrom(Date dateFrom) {
-		this.dateFrom = dateFrom;
-	}
-	public String getLastUpdatedUserId() {
-		return lastUpdatedUserId;
-	}
-	public void setLastUpdatedUserId(String lastUpdatedUserId) {
-		this.lastUpdatedUserId = lastUpdatedUserId;
-	}
-	public Date getLastUpdatedDate() {
-		return lastUpdatedDate;
-	}
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
-		this.lastUpdatedDate = lastUpdatedDate;
-	}
-	
-	
-	
+
 }

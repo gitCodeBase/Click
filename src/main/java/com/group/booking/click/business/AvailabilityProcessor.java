@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.group.booking.click.dao.impl.ClickRepositoryImpl;
-import com.group.booking.click.model.AvailDates;
-import com.group.booking.click.model.AvailabilityDetails;
+import com.group.booking.click.model.Booking;
 import com.group.booking.click.model.MonthDay;
 import com.group.booking.click.utility.Helper;
 
@@ -31,10 +30,10 @@ public class AvailabilityProcessor {
 	 * @param String - toDate
 	 * @return
 	 */
-	public List<AvailabilityDetails> fetchAvailabilityBasedOn(AvailabilityDetails availabilityDetails){
+	public List<Booking> fetchAvailabilityBasedOn(Booking bookingObj){
 		
 		//call the dao for fetching the non-availability details
-		return  availabilityDao.fetchAvailability(availabilityDetails);
+		return  null;//availabilityDao.fetchAvailability(availabilityDetails);
 	}
 	
 	/**
@@ -44,44 +43,45 @@ public class AvailabilityProcessor {
 	 * @throws JsonProcessingException
 	 * @throws ParseException 
 	 */
-	public AvailabilityDetails insertAvailability(AvailabilityDetails availabilityDetails) throws JsonProcessingException, ParseException{
+	public Booking createBooking(Booking bookingObj) throws JsonProcessingException, ParseException{
 		
-		String[] dateSplitted = Helper.splitDate(availabilityDetails.getFromDate());
-		int year = Integer.valueOf(dateSplitted[2]);
-		int month = Integer.valueOf(dateSplitted[0]);
-		Set<Integer> availableDays = Helper.getDaysInaMonth(year, month);
-				
-		List<MonthDay> monthDayList = new ArrayList<MonthDay>();
-		MonthDay monthDayDetails = new MonthDay();
-		monthDayDetails.setMonth(month);
-		monthDayDetails.setDays(availableDays);
+		/*
+		 * String[] dateSplitted = Helper.splitDate(availabilityDetails.getFromDate());
+		 * int year = Integer.valueOf(dateSplitted[2]); int month =
+		 * Integer.valueOf(dateSplitted[0]); Set<Integer> availableDays =
+		 * Helper.getDaysInaMonth(year, month);
+		 * 
+		 * List<MonthDay> monthDayList = new ArrayList<MonthDay>(); MonthDay
+		 * monthDayDetails = new MonthDay(); monthDayDetails.setMonth(month);
+		 * monthDayDetails.setDays(availableDays);
+		 * 
+		 * monthDayList.add(monthDayDetails); AvailDates availDates = new AvailDates();
+		 * availDates.setYear(year); availDates.setMonthDays(monthDayList);
+		 * 
+		 * List<AvailDates> availDatesList = new ArrayList<AvailDates>();
+		 * availDatesList.add(availDates);
+		 * 
+		 * availabilityDetails.setAvailDates(availDatesList);
+		 * 
+		 * DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy"); String dateNow =
+		 * formatter.format(new Date());
+		 * availabilityDetails.setLastUpdatedDate(dateNow);
+		 * 
+		 * //availabilityDao.saveOrUpdateAvailability(availabilityDetails);
+		 * 
+		 * return availabilityDetails;
+		 */
 		
-		monthDayList.add(monthDayDetails);
-		AvailDates availDates = new AvailDates();
-		availDates.setYear(year);
-		availDates.setMonthDays(monthDayList);
-		
-		List<AvailDates> availDatesList = new ArrayList<AvailDates>();
-		availDatesList.add(availDates);		
-		
-		availabilityDetails.setAvailDates(availDatesList);
-		
-		DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-		String dateNow = formatter.format(new Date());
-		availabilityDetails.setLastUpdatedDate(dateNow);
-		
-		availabilityDao.saveOrUpdateAvailability(availabilityDetails);
-		
-		return availabilityDetails;
+		return null;
 	}
 	
-	public void updateAvailability(AvailabilityDetails availabilityDetails) throws JsonProcessingException {
+	public void updateBooking(Booking bookingObj) throws JsonProcessingException {
 		
 		DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 		String dateNow = formatter.format(new Date());
-		availabilityDetails.setLastUpdatedDate(dateNow);
+	//	availabilityDetails.setLastUpdatedDate(dateNow);
 		
-		availabilityDao.saveOrUpdateAvailability(availabilityDetails);
+	//	availabilityDao.saveOrUpdateAvailability(availabilityDetails);
 	}
 	
 	

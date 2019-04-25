@@ -3,11 +3,13 @@ package com.group.booking.click.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class UserDetails implements Serializable{
+public class VendorDetails implements Serializable {
 
 	private String name;
 	private String address;
 	private String[] contactNbr;
+	private Date contractEndDate;
+	
 	public String getName() {
 		return name;
 	}
@@ -25,6 +27,12 @@ public class UserDetails implements Serializable{
 	}
 	public void setContactNbr(String[] contactNbr) {
 		this.contactNbr = contactNbr;
+	}
+	public Date getContractEndDate() {
+		return contractEndDate;
+	}
+	public void setContractEndDate(Date contractEndDate) {
+		this.contractEndDate = contractEndDate;
 	}
 	
 	

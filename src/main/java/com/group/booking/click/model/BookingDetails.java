@@ -2,87 +2,93 @@ package com.group.booking.click.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.data.annotation.Transient;
 
 public class BookingDetails implements Serializable{
 
-	private String id;
-	private String itemId;
-	private String userId;
-	private List<AvailDates> dates;
-	private double totalAmount;
-	private double taxAmount;
-	private double amountPaid;
-	private String lastUpdateUserId;
-	private Date lastUpdateDate;
-	@Transient
-	private List<AvailDates> bookingDates;
+	private String bookedThrough;
+	private String bookingFromTime;
+	private String bookingToTime;
+	private double amtCollected;
+	private double taxCollected;
+	private boolean amtProcessedToVendor;
+	private String amtProcessedToVendorThrough;
+	private Date amtProcessedToVendorOn;
+	private String type;
+	private String place;
+	private int qtyAvailable;
+	private User userDetails;
 	
-	public List<AvailDates> getDates() {
-		return dates;
+	public String getBookedThrough() {
+		return bookedThrough;
 	}
-	@Transient
-	public void setDates(List<AvailDates> dates) {
-		this.dates = dates;
+	public void setBookedThrough(String bookedThrough) {
+		this.bookedThrough = bookedThrough;
 	}
-	public String getId() {
-		return id;
+	public String getBookingFromTime() {
+		return bookingFromTime;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setBookingFromTime(String bookingFromTime) {
+		this.bookingFromTime = bookingFromTime;
 	}
-	public String getItemId() {
-		return itemId;
+	public String getBookingToTime() {
+		return bookingToTime;
 	}
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
+	public void setBookingToTime(String bookingToTime) {
+		this.bookingToTime = bookingToTime;
 	}
-	public String getUserId() {
-		return userId;
+	public double getAmtCollected() {
+		return amtCollected;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAmtCollected(double amtCollected) {
+		this.amtCollected = amtCollected;
 	}
-	public List<AvailDates> getBookingDates() {
-		return bookingDates;
+	public double getTaxCollected() {
+		return taxCollected;
 	}
-	public void setBookingDates(List<AvailDates> bookingDates) {
-		this.bookingDates = bookingDates;
+	public void setTaxCollected(double taxCollected) {
+		this.taxCollected = taxCollected;
 	}
-	public double getTotalAmount() {
-		return totalAmount;
+	public boolean isAmtProcessedToVendor() {
+		return amtProcessedToVendor;
 	}
-	public void setTotalAmount(double totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setAmtProcessedToVendor(boolean amtProcessedToVendor) {
+		this.amtProcessedToVendor = amtProcessedToVendor;
 	}
-	public double getTaxAmount() {
-		return taxAmount;
+	public String getAmtProcessedToVendorThrough() {
+		return amtProcessedToVendorThrough;
 	}
-	public void setTaxAmount(double taxAmount) {
-		this.taxAmount = taxAmount;
+	public void setAmtProcessedToVendorThrough(String amtProcessedToVendorThrough) {
+		this.amtProcessedToVendorThrough = amtProcessedToVendorThrough;
 	}
-	public double getAmountPaid() {
-		return amountPaid;
+	public Date getAmtProcessedToVendorOn() {
+		return amtProcessedToVendorOn;
 	}
-	public void setAmountPaid(double amountPaid) {
-		this.amountPaid = amountPaid;
+	public void setAmtProcessedToVendorOn(Date amtProcessedToVendorOn) {
+		this.amtProcessedToVendorOn = amtProcessedToVendorOn;
 	}
-	public String getLastUpdateUserId() {
-		return lastUpdateUserId;
+	public String getType() {
+		return type;
 	}
-	public void setLastUpdateUserId(String lastUpdateUserId) {
-		this.lastUpdateUserId = lastUpdateUserId;
+	public void setType(String type) {
+		this.type = type;
 	}
-	public Date getLastUpdateDate() {
-		return lastUpdateDate;
+	public String getPlace() {
+		return place;
 	}
-	public void setLastUpdateDate(Date lastUpdateDate) {
-		this.lastUpdateDate = lastUpdateDate;
+	public void setPlace(String place) {
+		this.place = place;
 	}
-	
-	
+	public int getQtyAvailable() {
+		return qtyAvailable;
+	}
+	public void setQtyAvailable(int qtyAvailable) {
+		this.qtyAvailable = qtyAvailable;
+	}
+	public User getUserDetails() {
+		return userDetails;
+	}
+	public void setUserDetails(User userDetails) {
+		this.userDetails = userDetails;
+	}
 	
 }

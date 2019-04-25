@@ -5,32 +5,13 @@ import java.util.Date;
 
 public class ItemReviews implements Serializable{
 
-	private String id;
-	private String itemId;
-	private String userId;
+	private String userName;
 	private double rating;
+	private String heading;
 	private String comments;
-	private Date purchaseDate;
-	private Date lastUpdatedDate;
+	private Date date;
+	private String status;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getItemId() {
-		return itemId;
-	}
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 	public double getRating() {
 		return rating;
 	}
@@ -43,19 +24,29 @@ public class ItemReviews implements Serializable{
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	public Date getPurchaseDate() {
-		return purchaseDate;
+	public String getUserName() {
+		return userName;
 	}
-	public void setPurchaseDate(Date purchaseDate) {
-		this.purchaseDate = purchaseDate;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public Date getLastUpdatedDate() {
-		return lastUpdatedDate;
+	public Date getDate() {
+		return date;
 	}
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
-		this.lastUpdatedDate = lastUpdatedDate;
+	public void setDate(Date date) {
+		this.date = date;
 	}
-	
-	
-	
+	public String getHeading() {
+		return heading;
+	}
+	public void setHeading(String heading) {
+		this.heading = heading;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+		
 }
