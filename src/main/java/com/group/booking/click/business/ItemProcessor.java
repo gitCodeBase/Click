@@ -1,6 +1,5 @@
 package com.group.booking.click.business;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,11 +12,12 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.group.booking.click.dao.impl.ClickRepositoryImpl;
+import com.group.booking.click.model.Image;
 import com.group.booking.click.model.Item;
+import com.group.booking.click.model.ItemDetails;
 import com.group.booking.click.model.ItemSearchCriteria;
 import com.group.booking.click.model.Pricing;
 import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSFile;
 
 @Component
 public class ItemProcessor {
@@ -97,9 +97,33 @@ public class ItemProcessor {
 		itemDetailsDao.saveImage(targetStream, fileName);
 	}
 	
-	public GridFSDBFile retrieveImage() {
-		return itemDetailsDao.retrieveImage();
+	public GridFSDBFile retrieveImages(String fileName) {
+		return itemDetailsDao.retrieveImages(fileName);
 	}
 	 
+	public void saveImageNames(String itemId, String fileName, boolean isMainImage) {
+		
+		Item savedItem = itemDetailsDao.fetchItemDetails(itemId);
+		
+		Item item = new Item();
+		item.set_id(itemId);
+		item.setDetails(savedItem.getDetails());
+		if(isMainImage) {
+			ItemDetails details = savedItem.getDetails();
+			details.setMainImageUrl(fileName);
+			item.setDetails(details);
+		}
+		List<Image> imageList = savedItem.getImages() != null ? savedItem.getImages(): new ArrayList<Image>();
+		Image imageDetails = new Image();
+		imageDetails.setFileName(fileName);
+		
+		imageList.add(imageDetails);
+		item.setImages(imageList);
+		itemDetailsDao.saveImageNames(item);
+	}
+	
+	/*public List<Images> getImageDetails(String itemId) {
+		return itemDetailsDao.getImageDetails(itemId);
+	}*/
 	
 }

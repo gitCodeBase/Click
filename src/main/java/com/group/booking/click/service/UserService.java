@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ import com.group.booking.click.model.User;
 import com.group.booking.click.model.Vendor;
 
 @Controller
-//@CrossOrigin(origins="http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins="http://localhost:8081", maxAge=3600)
 @RequestMapping("/user")
 public class UserService {
 
@@ -63,11 +64,21 @@ public class UserService {
 	
 	}
 	
+	@RequestMapping(value = "/forgotPassword", consumes= {"application/json"}, produces= {"application/json"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public boolean forgotPassword(@RequestBody User user) {
+     	
+		boolean isMsgSend = userDetailsProcessor.forgotPassword(user.getEmailId(), "Customer");
+		return isMsgSend;
+    }
+
 	//----------------vendor------------
 	
 	@RequestMapping(value ="/create/vendor", consumes= {"application/json"}, method = {RequestMethod.POST})
-    public void createVendor(@RequestBody Vendor vendor) {
+	@ResponseBody
+    public Vendor createVendor(@RequestBody Vendor vendor) {
 		userDetailsProcessor.createVendor(vendor);
+		return vendor;
 	}
 	
 	@RequestMapping(value ="/validate/vendor", consumes= {"application/json"}, produces= {"application/json"}, method = {RequestMethod.POST})
@@ -86,12 +97,11 @@ public class UserService {
 		return vendorDetails;
     }
 	
-	//--------------------------
-	@RequestMapping(value = "/forgotPassword", consumes= {"application/json"}, produces= {"application/json"}, method = {RequestMethod.GET})
+	@RequestMapping(value = "/forgotPassword/vendor", consumes= {"application/json"}, produces= {"application/json"}, method = {RequestMethod.POST})
 	@ResponseBody
-	public boolean forgotPassword(@PathVariable String userName, @PathVariable String type) {
-    	
-		boolean isMsgSend = userDetailsProcessor.forgotPassword(userName, type);
+	public boolean forgotPasswordVendor(Vendor vendor) {
+     	
+		boolean isMsgSend = userDetailsProcessor.forgotPassword(vendor.getEmailId(), "customer");
 		return isMsgSend;
     }
 	

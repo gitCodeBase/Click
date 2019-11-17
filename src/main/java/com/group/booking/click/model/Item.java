@@ -17,6 +17,7 @@ public class Item implements Serializable{
 	private Pricing price;
 	private FilterDetails filter; // this can be appended with any filter that is required
 	private List<ItemReviews> reviews;
+	private List<Image> images;
  	private String status;
  	private Date createdOn;
  	private String createdBy;
@@ -101,6 +102,12 @@ public class Item implements Serializable{
 	}
 	public void setLastUpdatedBy(String lastUpdatedBy) {
 		this.lastUpdatedBy = lastUpdatedBy;
+	}
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 	
 }

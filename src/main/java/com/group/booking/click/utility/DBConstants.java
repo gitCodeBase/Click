@@ -26,6 +26,8 @@ public class DBConstants {
 	public static String ITEM_REVIEWS = "reviews";
 	public static String ITEM_LASTUPDATEDBY = "lastModifiedBy";
 	public static String ITEM_LASTUPDATEDON = "lastModifiedOn";
+	public static String ITEM_IMAGES = "images";
+	//public static String ITEM_IMAGE_FILENAME = "images.$.fileName";
 	
 	//UserDetails
 	public static String USER_ID = "_id";

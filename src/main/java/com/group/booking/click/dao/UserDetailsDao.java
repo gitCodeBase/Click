@@ -25,8 +25,8 @@ public interface UserDetailsDao {
 	
 	//---------
 	
-	public void updateUserPassword(User user);
+	public boolean updateUserPassword(User user);
 	
-	public void updateVendorPassword(Vendor vendor);
+	public boolean updateVendorPassword(Vendor vendor);
 	
 }

@@ -11,7 +11,7 @@ public class ItemDetails implements Serializable{
 	private String mailId;
 	private Amenities amenities;
 	private double rating;
-	private Images images;
+	private String mainImageUrl;
 	private String description;
 	private int qtyAvailable;
 	 
@@ -57,11 +57,11 @@ public class ItemDetails implements Serializable{
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
-	public Images getImages() {
-		return images;
+	public String getMainImageUrl() {
+		return mainImageUrl;
 	}
-	public void setImages(Images images) {
-		this.images = images;
+	public void setMainImageUrl(String mainImageUrl) {
+		this.mainImageUrl = mainImageUrl;
 	}
 	public String getDescription() {
 		return description;

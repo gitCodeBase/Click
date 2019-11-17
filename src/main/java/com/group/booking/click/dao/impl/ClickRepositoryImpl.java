@@ -2,7 +2,9 @@ package com.group.booking.click.dao.impl;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,12 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.group.booking.click.dao.ItemDao;
+import com.group.booking.click.model.Image;
 import com.group.booking.click.model.Item;
+import com.group.booking.click.model.ItemDetails;
 import com.group.booking.click.model.ItemSearchCriteria;
 import com.group.booking.click.utility.DBConstants;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.gridfs.GridFSDBFile;
 
 @Component
@@ -105,9 +110,12 @@ public class ClickRepositoryImpl implements ItemDao {
 		return itemDetails;
 	}
 
-	public GridFSDBFile retrieveImage() {
-	//	GridFSFile gridFsFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is("1234.png")));
-		GridFSDBFile imageFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is("1234.jpg")));
+	public GridFSDBFile retrieveImages(String fileName) {
+	//	GridFSFile gridFsFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is(fileName)));
+		GridFSDBFile imageFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is(fileName)));
+		
+	//	List<GridFSDBFile> imageFile = gridFsTemplate.find(new Query(Criteria.where("images.$.filename").regex(itemId)));
+		
 		return imageFile;
 	}
 	
@@ -116,6 +124,31 @@ public class ClickRepositoryImpl implements ItemDao {
 		gridFsTemplate.store(targetStream, fileName);
 
 	}
+	
+	public void saveImageNames(Item item) {
+		
+		Query updateQuery = new Query();
+		updateQuery.addCriteria(Criteria.where(DBConstants.ITEM_ID).is(new ObjectId(item.get_id())));
+		
+		Update update = new Update();
+		/*ItemDetails details = new ItemDetails();
+		details.setMainImageUrl(item.getDetails().getMainImageUrl());
+		List<Image> images = new ArrayList<Image>();
+		Image image = new Image();
+		image.setFileName(item.getImages().get(0).getFileName());
+		images.add(image);*/
+		update.set(DBConstants.ITEM_IMAGES, item.getImages());
+		update.set(DBConstants.ITEM_DETAILS, item.getDetails());
+		
+		mongoTemplate.updateFirst(updateQuery, update, Item.class);
+	}
+	
+/*	public List<Images> getImageDetails(String itemId) {
+		Query filterQuery = new Query();
+		filterQuery.addCriteria(Criteria.where(DBConstants.ITEM_ID).is(itemId));
+		
+		return mongoTemplate.find(filterQuery, Images.class);
+	}*/
 
 
 }

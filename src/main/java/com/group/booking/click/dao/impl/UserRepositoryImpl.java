@@ -13,6 +13,7 @@ import com.group.booking.click.dao.UserDetailsDao;
 import com.group.booking.click.model.User;
 import com.group.booking.click.model.Vendor;
 import com.group.booking.click.utility.DBConstants;
+import com.mongodb.WriteResult;
 
 @Component
 public class UserRepositoryImpl implements UserDetailsDao {
@@ -93,7 +94,7 @@ public class UserRepositoryImpl implements UserDetailsDao {
 	
 	//---------------
 	
-	public void updateUserPassword(User user) {
+	public boolean updateUserPassword(User user) {
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where(DBConstants.USER_EMAILID).is(user.getEmailId()));
@@ -101,10 +102,11 @@ public class UserRepositoryImpl implements UserDetailsDao {
 		Update update = new Update();
 		update.set("password", user.getPassword());
 		
-		mongoTemplate.updateFirst(query, update, User.class);
+		WriteResult resultDetails = mongoTemplate.updateFirst(query, update, User.class);
+		return resultDetails.isUpdateOfExisting();
 	}
 	
-	public void updateVendorPassword(Vendor vendor) {
+	public boolean updateVendorPassword(Vendor vendor) {
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where(DBConstants.USER_EMAILID).is(vendor.getEmailId()));
@@ -112,7 +114,8 @@ public class UserRepositoryImpl implements UserDetailsDao {
 		Update update = new Update();
 		update.set("password", vendor.getPassword());
 		
-		mongoTemplate.updateFirst(query, update, Vendor.class);
+		WriteResult resultDetails = mongoTemplate.updateFirst(query, update, Vendor.class);
+		return resultDetails.isUpdateOfExisting();
 	}
 	
 

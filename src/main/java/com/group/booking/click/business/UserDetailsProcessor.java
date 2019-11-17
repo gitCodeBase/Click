@@ -64,26 +64,38 @@ public class UserDetailsProcessor {
 	}
 	
 	public void createUser(User user) {
-		    
-        // Protect user's password. The generated value can be stored in DB.
-        String mySecurePassword = PasswordUtils.generateSecurePassword(user.getPassword());
-        
-        // Print out protected password 
-        System.out.println("My secure password = " + mySecurePassword);
-        user.setPassword(mySecurePassword);
-		userDetailsDao.createUser(user);
+		   
+		User userDetails = userDetailsDao.retrieveUserDetails(user);
+		if(null == userDetails || userDetails.get_id() == null) {
+	        // Protect user's password. The generated value can be stored in DB.
+	        String mySecurePassword = PasswordUtils.generateSecurePassword(user.getPassword());
+	        
+	        // Print out protected password 
+	        System.out.println("My secure password = " + mySecurePassword);
+	        user.setPassword(mySecurePassword);
+			userDetailsDao.createUser(user);
+		} else {
+			//TODO user already exists
+		}
 	}
 	
 	//------------------Vendor
 	
 	public void createVendor(Vendor vendor) {
-		 // Protect user's password. The generated value can be stored in DB.
-        String mySecurePassword = PasswordUtils.generateSecurePassword(vendor.getPassword());
-        
-        // Print out protected password 
-        System.out.println("My secure password = " + mySecurePassword);
-        vendor.setPassword(mySecurePassword);
-		userDetailsDao.createVendor(vendor);
+		
+		//call the dao for fetching the item details 
+		Vendor vendorDetails = userDetailsDao.retrieveVendorDetails(vendor);
+		if(null == vendorDetails || vendorDetails.get_id() == null) {		
+			// Protect user's password. The generated value can be stored in DB.
+	        String mySecurePassword = PasswordUtils.generateSecurePassword(vendor.getPassword());
+	        
+	        // Print out protected password 
+	        System.out.println("My secure password = " + mySecurePassword);
+	        vendor.setPassword(mySecurePassword);
+			userDetailsDao.createVendor(vendor);
+		} else {
+			//TODO vendor already exists
+		}
 	}
 	
 	/**
@@ -134,40 +146,42 @@ public class UserDetailsProcessor {
 	 * Method to update user password
 	 * @param user
 	 */
-	public void updateUserPassword(User user) {
-		userDetailsDao.updateUserPassword(user);
+	public boolean updateUserPassword(User user) {
+		return userDetailsDao.updateUserPassword(user);
 	}
 	
 	/**
 	 * Method to update user password
 	 * @param user
 	 */
-	public void updateVendorPassword(Vendor vendor) {
-		userDetailsDao.updateVendorPassword(vendor);
+	public boolean updateVendorPassword(Vendor vendor) {
+		return userDetailsDao.updateVendorPassword(vendor);
 	}
 	
-	public boolean forgotPassword(String userName, String type) {
-		if(!StringUtils.isEmpty(userName)) {
+	public boolean forgotPassword(String mailId, String type) {
+		if(!StringUtils.isEmpty(mailId)) {
 		
 			String randomPassword = randomPasswordGenerator.generatePassayPassword();
 			// Protect user's password. The generated value can be stored in DB.
 	        String mySecurePassword = PasswordUtils.generateSecurePassword(randomPassword);
-			
+			boolean isUpdate = false;
+	        
 			if(type.equals("vendor")) {
 				Vendor vendor = new Vendor();
-				vendor.setEmailId(userName);
+				vendor.setEmailId(mailId);
 				vendor.setPassword(mySecurePassword);
-				updateVendorPassword(vendor);
+				isUpdate = updateVendorPassword(vendor);
 			} else {
 				User user = new User();
-				user.setEmailId(userName);
+				user.setEmailId(mailId);
 				user.setPassword(mySecurePassword);
-				updateUserPassword(user);
+				isUpdate = updateUserPassword(user);
 			}
-			
-			userPasswordMailProcessor.sendMail(userName, randomPassword);
-			
-			return true;
+			if(isUpdate) {
+				userPasswordMailProcessor.sendMail(mailId, randomPassword);
+				return true;
+			} 
+			return false;
 		} else {
 			return false;
 		}

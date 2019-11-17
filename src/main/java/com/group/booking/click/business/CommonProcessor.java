@@ -40,4 +40,9 @@ public class CommonProcessor {
 		
 		return typeList;
 	}
+	
+	public void saveStates(List<States> states) {
+		commonRepositoryImpl.saveStates(states);
+		
+	}
 }

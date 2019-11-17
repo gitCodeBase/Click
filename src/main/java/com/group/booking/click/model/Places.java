@@ -2,6 +2,9 @@ package com.group.booking.click.model;
 
 import java.io.Serializable;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "places")
 public class Places implements Serializable{
 
 	private String id;

@@ -27,15 +27,19 @@ public class CommonRepositoryImpl {
 	}
 	
 	public List<City> retrieveCities(String stateId) {
+		/*List<City> cityList = mongoTemplate.find(Query.query(
+				Criteria.where(DBConstants.STATE_ID).in( new ObjectId(stateId))), City.class);*/
 		List<City> cityList = mongoTemplate.find(Query.query(
-				Criteria.where(DBConstants.STATE_ID).in( new ObjectId(stateId))), City.class);
+				Criteria.where(DBConstants.STATE_ID).in(stateId)), City.class);
 		
 		return cityList;
 	}
 	
 	public List<Places> retrievePlaces(String cityId) {
+		/*List<Places> placeList = mongoTemplate.find(Query.query(
+				Criteria.where(DBConstants.CITY_ID).in(new ObjectId(cityId))), Places.class);*/
 		List<Places> placeList = mongoTemplate.find(Query.query(
-				Criteria.where(DBConstants.CITY_ID).in(new ObjectId(cityId))), Places.class);
+				Criteria.where(DBConstants.CITY_ID).in(cityId)), Places.class);
 		
 		return placeList;
 	}
@@ -43,5 +47,10 @@ public class CommonRepositoryImpl {
 	public List<ItemType> retrieveTypes() {
 		List<ItemType> typesList = mongoTemplate.findAll(ItemType.class);
 		return typesList;
+	}
+	
+	public void saveStates(List<States> states) {
+		mongoTemplate.insert(states, States.class);
+		
 	}
 }
